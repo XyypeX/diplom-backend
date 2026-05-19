@@ -1,0 +1,1 @@
+from app.routers import auth_router, courses_router

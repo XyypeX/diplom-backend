@@ -1,0 +1,27 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.database import engine, Base
+from app.routers import auth_router, courses_router
+
+# Создаём таблицы
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Course Board API", version="1.0.0")
+
+# CORS — чтобы фронт мог достучаться
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Подключаем роутеры
+app.include_router(auth_router.router)
+app.include_router(courses_router.router)
+
+
+@app.get("/")
+def root():
+    return {"message": "Course Board API работает"}
